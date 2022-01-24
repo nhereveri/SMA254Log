@@ -1,0 +1,21 @@
+{
+    "name": "airviro/sma254log",
+    "description": "API para tabla de log para distribución SMA254.",
+    "type": "library",
+    "license": "Unlicense",
+    "autoload": {
+        "psr-4": {
+            "Airviro\\SMA254Log\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nelson Hereveri",
+            "email": "nh@r9.cl"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.3"
+    }
+}
