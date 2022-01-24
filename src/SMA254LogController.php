@@ -10,7 +10,7 @@ class SMA254LogController extends Controller
 {
     public function index()
     {
-        return SMA254Log::orderBy('unixtime', 'desc')->paginate(env('SMA254LOG_PAGINATION', 100));
+        return SMA254Log::orderBy('unixtime', 'desc')->cursorPaginate(env('SMA254LOG_PAGINATION', 100));
     }
 
     public function show($id)
