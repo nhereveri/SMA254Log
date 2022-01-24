@@ -118,7 +118,7 @@ class SMA254LogController extends Controller
             }
         }
         return response()->json(array(
-            'previous_page_url' => $procesos->previousPageUrl(),
+            'prev_page_url' => $procesos->previousPageUrl(),
             'next_page_url' => $procesos->nextPageUrl(),
             'data' => $output
         ), 200);
