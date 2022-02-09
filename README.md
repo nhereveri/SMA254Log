@@ -104,6 +104,8 @@ La API puede obtener datos de un parámetro específico para ser utilizado como 
 }
 ```
 
+Ejemplos de salidas generadas en [Highcharts](https://www.highcharts.com/) mediante el uso de esta API.
+
 ![Imagen 1: salida de ejemplo simple](sample.png)
 
 ![Imagen 2: salida de ejemplo con tooltip personalizado](tooltip.png)
