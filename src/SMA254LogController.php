@@ -5,17 +5,32 @@ namespace Airviro\SMA254Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Airviro\SMA254Log\SMA254Log;
+use Illuminate\Support\Facades\URL;
 
 class SMA254LogController extends Controller
 {
     public function index()
     {
-        return SMA254Log::orderBy('unixtime', 'desc')->cursorPaginate(env('SMA254LOG_PAGINATION', 100));
+        $procesos = SMA254Log::orderBy('unixtime', 'desc')->cursorPaginate(env('SMA254LOG_PAGINATION', 100));
+        return response()->json(array(
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
+            'data' => $procesos->all()
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function show($id)
     {
-        return SMA254Log::findOrFail($id);
+        $proceso = SMA254Log::findOrFail($id);
+        return response()->json(array(
+            'links' => [
+                'self' => URL::full()
+            ],
+            'data' => $proceso->all()
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function proceso($uf, $proceso)
@@ -31,6 +46,19 @@ class SMA254LogController extends Controller
     public function procesoFromTo($uf, $proceso, $from, $to)
     {
         return SMA254Log::where('uf', '=', $uf)->where('proceso', '=', $proceso)->where('unixtime', '>=', $from)->where('unixtime', '<=', $to)->orderBy('unixtime', 'asc')->cursorPaginate(env('SMA254LOG_PAGINATION', 100));
+    }
+
+    public function procesoLast($uf, $proceso)
+    {
+        $procesos = $this->proceso($uf, $proceso);
+        return response()->json(array(
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
+            'data' => $procesos->all()
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function dispositivo($uf, $proceso, $dispositivo)
@@ -52,7 +80,14 @@ class SMA254LogController extends Controller
                 }
             }
         }
-        return response()->json($output, 200);
+        return response()->json(array(
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
+            'data' => $output
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function parametro($uf, $proceso, $dispositivo, $parametro)
@@ -80,19 +115,84 @@ class SMA254LogController extends Controller
                 }
             }
         }
-        return response()->json($output, 200);
+        return response()->json(array(
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
+            'data' => $output
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function from($uf, $proceso, $dispositivo, $parametro, $from)
     {
         $output = array();
-        return $this->procesoFrom($uf, $proceso, $from);
+        $procesos = $this->procesoFrom($uf, $proceso, $from);
+        foreach($procesos as $proceso) {
+            foreach($proceso->data as $data) {
+                if($data['dispositivoId'] == $dispositivo) {
+                    foreach($data['parametros'] as $par) {
+                        if($par['nombre'] == $parametro) {
+                            array_push($output, [
+                                'unixtime' => $proceso->unixtime,
+                                'uf' => $proceso->uf,
+                                'proceso' => $proceso->proceso,
+                                'id' => $proceso->id,
+                                'dispositivo' => $data['dispositivoId'],
+                                'parametro' => $par['nombre'],
+                                'unidad' => $par['unidad'],
+                                'valor' => $par['valor'],
+                                'enviado' => $proceso->enviado
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        return response()->json(array(
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
+            'data' => $output
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function fromTo($uf, $proceso, $dispositivo, $parametro, $from, $to)
     {
         $output = array();
-        return $this->procesoFromTo($uf, $proceso, $from, $to);
+        $procesos = $this->procesoFromTo($uf, $proceso, $from, $to);
+        foreach($procesos as $proceso) {
+            foreach($proceso->data as $data) {
+                if($data['dispositivoId'] == $dispositivo) {
+                    foreach($data['parametros'] as $par) {
+                        if($par['nombre'] == $parametro) {
+                            array_push($output, [
+                                'unixtime' => $proceso->unixtime,
+                                'uf' => $proceso->uf,
+                                'proceso' => $proceso->proceso,
+                                'id' => $proceso->id,
+                                'dispositivo' => $data['dispositivoId'],
+                                'parametro' => $par['nombre'],
+                                'unidad' => $par['unidad'],
+                                'valor' => $par['valor'],
+                                'enviado' => $proceso->enviado
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        return response()->json(array(
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
+            'data' => $output
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 
     public function highcharts($uf, $proceso, $dispositivo, $parametro, $from, $to)
@@ -118,9 +218,12 @@ class SMA254LogController extends Controller
             }
         }
         return response()->json(array(
-            'prev_page_url' => $procesos->previousPageUrl(),
-            'next_page_url' => $procesos->nextPageUrl(),
+            'links' => [
+                'prev_page_url' => $procesos->previousPageUrl(),
+                'next_page_url' => $procesos->nextPageUrl(),
+                'self' => URL::full()
+            ],
             'data' => $output
-        ), 200);
+        ), 200)->header('Content-Type', 'application/vnd.api+json');
     }
 }
