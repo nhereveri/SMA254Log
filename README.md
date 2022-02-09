@@ -42,7 +42,7 @@ SMA254LOG_PAGINATION=100
 
 ## Uso de la API para presentar los logs
 
-El API proporciona acceso a solicitudes con método GET exclusivamente. El acceso a esta API no requiere autenticación para su uso.
+El API proporciona acceso a solicitudes con método GET exclusivamente. El acceso a esta API no requiere autenticación para su usoEl formato de esta API cumple con la especificación [`JSON API`](https://jsonapi.org/).
 
 - `/api/sma254log`
 - `/api/sma254log/{id-verificación}`
@@ -53,7 +53,7 @@ El API proporciona acceso a solicitudes con método GET exclusivamente. El acces
 - `/api/sma254log/{ufID}/{procesoID}/{dispositivoID}/{parametroNombre}/{fromTimestamp}/{toTimestamp}`
 - `/api/sma254log/{ufID}/{procesoID}/{dispositivoID}/{parametroNombre}/{fromTimestamp}/{toTimestamp}/highcharts`
 
-La API retorna un JSON con los datos disponibles a través de la propiedad `data`. Los datos están paginados y pueden ser consultados utilizando las propiedades `next_page_url` y `prev_page_url`.
+La API retorna un JSON con los datos disponibles a través de la propiedad `data`. Los datos están paginados y pueden ser consultados utilizando las propiedades `links.next_page_url` y `links.prev_page_url`.
 
 Los parámetros deben ser proporcionados mediante las siguientes especificaciones.
 
@@ -73,48 +73,36 @@ La API puede obtener datos de un parámetro específico para ser utilizado como 
 
 ```json
 {
+	"links": {
+		"prev_page_url": "https://chart.lan/api/sma254log/1641/46/252/NOX/1644325200/1644354000/highcharts?cursor=eyJ1bml4dGltZSI6MTY0NDMzNjAwMCwiX3BvaW50c1RvTmV4dEl0ZW1zIjpmYWxzZX0",
+		"next_page_url": "https://chart.lan/api/sma254log/1641/46/252/NOX/1644325200/1644354000/highcharts?cursor=eyJ1bml4dGltZSI6MTY0NDM0NjgwMCwiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ",
+		"self": "https://chart.lan/api/sma254log/1641/46/252/NOX/1644325200/1644354000/highcharts?cursor=eyJ1bml4dGltZSI6MTY0NDMzMjQwMCwiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ"
+	},
 	"data": [
 		{
-			"x": 1642996200000,
-			"y": 0.55,
-			"id": "d125c9e8-5711-438f-bd7b-d93441a37cb2",
-			"unidad": "ppb",
-			"enviado": 1642997411000
-		},
-		{
-			"x": 1642996260000,
-			"y": 0.2,
-			"id": "d5fa9d4e-dbb6-4258-af70-234dbf11da77",
-			"unidad": "ppb",
-			"enviado": 1642997413000
-		},
-		{
-			"x": 1642996320000,
-			"y": 0.05,
-			"id": "0d005b28-728c-47d8-8476-ea16d9edfc3d",
-			"unidad": "ppb",
-			"enviado": 1642997414000
-		},
-		{
-			"x": 1642996380000,
+			"x": 1644336000000,
 			"y": 0.1,
-			"id": "d7be5352-c6b0-449c-978b-bfc3ef9d7de1",
+			"id": "c4d5ec56-1668-47fc-9d86-daedd84fe4f7",
 			"unidad": "ppb",
-			"enviado": 1642997416000
+			"enviado": 1644342903000
 		},
 		{
-			"x": 1642996440000,
-			"y": 0.35,
-			"id": "7d23704a-6d9f-4c8e-a1bf-680ebfa8417e",
+			"x": 1644339600000,
+			"y": 1.3,
+			"id": "a554703d-8c7f-42ad-b2f1-6e238e104f51",
 			"unidad": "ppb",
-			"enviado": 1642997418000
+			"enviado": 1644342905000
+		},
+		{
+			"x": 1644346800000,
+			"y": 6.45,
+			"id": "de2da39b-a687-494d-ad38-c2c4435b0743",
+			"unidad": "ppb",
+			"enviado": 1644353703000
 		}
-	],
-	"prev_page_url": "https:\/\/airviro.r9.cl\/api\/sma254log\/1641\/46\/252\/NO2\/1642995900\/1642999380\/highcharts?cursor=eyJ1bml4dGltZSI6MTY0Mjk5NjIwMCwiX3BvaW50c1RvTmV4dEl0ZW1zIjpmYWxzZX0",
-	"next_page_url": "https:\/\/airviro.r9.cl\/api\/sma254log\/1641\/46\/252\/NO2\/1642995900\/1642999380\/highcharts?cursor=eyJ1bml4dGltZSI6MTY0Mjk5NjQ0MCwiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ"
+	]
 }
 ```
-
 
 ![Imagen 1: salida de ejemplo simple](sample.png)
 
